@@ -9,7 +9,7 @@ member_bp = Blueprint(
 
 #signup_form                      
 @member_bp.route('/signup_form', methods=['GET'])
-def signup_form():
+def signup_form():  
 
     result = request.args.get('result')
 
