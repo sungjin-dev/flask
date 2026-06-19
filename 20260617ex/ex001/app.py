@@ -107,12 +107,10 @@ def login_form1():
 def login1():
     return "맛점"
 
-
 '''             get post...
 <form action="" method="" name="">
 <input type="text" name="u_id"
 '''
-
 
 #POST
 #http://127.0.0.1:5000/login

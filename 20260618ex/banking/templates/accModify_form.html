@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BANK SERVICE</title>
+
+    <link href="{{url_for('static', filename='css/common.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='css/bank.css')}}" rel="stylesheet">
+
+    <script src="{{url_for('static', filename='js/bank.js')}}"></script>
+
+</head>
+<body>
+                                                                                          
+    {% include 'include/header.html' %}
+    {% include 'include/nav.html' %}
+
+    {% if result == 'fail' %}
+        <p class="deposit_result">
+            로그인부터 해주세요
+        </p>
+    {% endif %}
+                                                                             
+    <article id="accModify_wrap">
+        <div class="accModify_form">
+            <form action="/bank/accModify_confirm"  method="post" name="accModify_form">
+                <input type="hidden" name="aNum" value="{{accounts.aNum}}">   
+                <input class="input_basic" type="text" name="aNum" value="{{accounts.aNum}}" readonly disabled>   
+                <br>
+                <input class="input_basic" type="password" name="aPw"  value="{{accounts.aPw}}"placeholder="Input Account PW">
+                <br>
+              
+                <input class="input_button_basic_130" type="button" value="ACC MODIFY" onclick="accModifyForm();">
+                <input class="input_button_basic_130" type="reset" value="RESET">
+            </form>
+        </div>
+    </article>
+
+    {% include 'include/footer.html' %}
+
+</body>
+</html>

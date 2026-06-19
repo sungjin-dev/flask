@@ -1,18 +1,16 @@
-function signupForm() {
-    console.log('signupForm')
+function newaccountForm() {
+    console.log('newaccountForm():', newaccountForm())
 
-    let form = document.signup_form;
+    let form = document.newaccount_form;
 
-    let mId = form.mId.value.trim();
-    let mPw = form.mPw.value.trim();
-    let mMail = form.mMail.value.trim();
-    let mPhone = form.mPhone.value.trim();
+    let aNum = form.aNum.value.trim();
+    let aPw = form.aPw.value.trim();
+  
+    console.log('aNum:', aNum)
+    console.log('aPw:', aPw)
 
-    console.log('mId:', mId)
-    console.log('mPd:', mPw)
-    console.log('mMail:', mMail)
-    console.log('mPhone:', mPhone)
-
+    mId = session.get('')
+  
     if (mId === '') {
         alert('Please input member ID!!')
         form.mId.focus();

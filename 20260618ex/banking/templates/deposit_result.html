@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BANK SERVICE</title>
+
+    <link href="{{url_for('static', filename='css/common.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='css/bank.css')}}" rel="stylesheet">
+
+</head>
+<body>
+    
+    {% include 'include/header.html' %}
+    {% include 'include/nav.html' %}
+
+    <article id="deposit_wrap">
+        <div class="deposit_result">
+
+                <h3>DEPOSIT SUCCESS!!</h3>  
+        </div>
+    </article>
+
+    {% include 'include/footer.html' %}
+
+</body>
+</html>
+
