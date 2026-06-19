@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ONLINE DIARY</title>
+
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+
+      <script src="{{ url_for('static', filename='js/util.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/db.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/session.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/dumy.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/viewChange.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/menuChange.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+ 
+</head>
+<body>
+
+    <div id="wrap">
+
+        <!-- 제목 -->
+         <div class="title_wrap">
+            OnLine Diary & Banking
+         </div>
+
+         <!-- 메뉴 -->
+          <div class="menu_wrap">
+            <a class="sign-up" href="#none">Sign-up</a>
+            <a class="sign-in" href="#none">Sign-in</a>
+            <a class="sign-out" href="#none">Sign-out</a>
+            <a class="delete" href="#none">Delete</a>
+            <a class="write" href="#none">Write</a>
+            <a class="list" href="#none">List</a>
+            <a class="new-account" href="#none">NEW ACCOUNT</a>
+            <a class="deposit" href="#none">DEPOSIT</a>
+            <a class="withdrwal" href="#none">WITHDRAWAL</a>
+            <a class="account-list" href="#none">ACC LIST</a>
+          </div>
+
+          <!-- 회원 가입 페이지 -->
+          <div class="sign_up_wrap">
+                <input class="basic_input" type="text" name="u_id" placeholder="INPUT USER ID!!">
+                <br>
+                <input class="basic_input" type="password" name="u_pw" placeholder="INPUT USER PW!!">
+                <br>
+                <input class="basic_input" type="email" name="u_mail" placeholder="INPUT USER MAIL!!">
+                <br>
+                <input class="basic_button" type="button" value="SIGN UP">
+          </div>
+
+          <!-- 회원 로그인 페이지 -->
+          <div class="sign_in_wrap">
+                <input class="basic_input" type="text" name="u_id" placeholder="INPUT USER ID!!">
+                <br>
+                <input class="basic_input" type="password" name="u_pw" placeholder="INPUT USER PW!!">
+                <br>
+                <input class="basic_button" type="button" value="SIGN IN">
+          </div>
+
+          <!-- 일기 작성 페이지 -->
+          <div class="write_wrap">
+                <input type="text"><button>Write</button>
+            
+          </div>
+
+          <!-- 일기 리스트 페이지 -->
+           <div class="list_wrap">
+                list...
+          </div>
+
+          <!-- 계좌 개설 -->
+           <div class="new_account_wrap">
+                <input class="basic_input" type="password" name="acc_pw" placeholder="INPUT ACC PW!!">
+                <br>
+                <input class="basic_button" type="button" value="NEW ACC">
+          </div>
+          <!-- 입금 -->
+           <div class="deposit_wrap">
+                <input class="basic_input" type="text" name="dep_accnum" placeholder="INPUT ACC NUM!!">
+                <br>
+                <input class="basic_input" type="password" name="acc_pw" placeholder="INPUT ACC PW!!">
+                <br>
+                 <input class="basic_input" type="text" name="dep_amount" placeholder="INPUT AMOUNT!">
+                <br>
+                <input class="basic_button" type="button" value="DEPOSIT">
+          </div>
+          <!-- 출금 -->
+           <div class="withdrawal_wrap">
+                <input class="basic_input" type="text" name="wit_accnum" placeholder="INPUT ACC NUM!!">
+                <br>       
+                <input class="basic_input" type="password" name="acc_pw" placeholder="INPUT ACC PW!!">
+                <br>
+                 <input class="basic_input" type="text" name="wit_amount" placeholder="INPUT AMOUNT!">
+                <br>
+                <input class="basic_button" type="button" value="WITHDRAWAL">
+          </div>
+          <!-- 계좌 목록 -->
+           <div class="acc_list_wrap">
+                list...
+          </div>
+
+    </div>
+
+    <template id = "list_item">
+      <div class="txt">
+
+      </div>
+    </template>  
+
+    <template id = "acc_list_item">
+      <div class="txt">
+
+      </div>
+    </template>  
+    
+</body>
+</html>
+
+<!-- 한 가지 팁: 스크립트 로드 순서
+JS 파일이 7개나 되므로, 의존성을 항상 체크하세요. 
+예를 들어, index.js에서 util.js에 있는 함수를 호출하고 있다면, 
+위 코드처럼 util.js가 반드시 index.js보다 위에 있어야 
+브라우저가 에러 없이 정상적으로 실행합니다. -->
+
+
+
+
+
+
+

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BANK SERVICE</title>
+
+    <link href="{{url_for('static', filename='css/common.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='css/bank.css')}}" rel="stylesheet">
+
+    <script src="{{url_for('static', filename='js/bank.js')}}"></script>
+
+</head>
+<body>
+
+    {% include 'include/header.html' %}
+    {% include 'include/nav.html' %}
+
+    <article id="deposit_wrap">
+
+        {% if result == 'fail' %}
+        <p class="deposit_result">
+            로그인부터 해주세요
+        </p>
+        {% endif %}
+
+        <div class="deposit_form">
+            <form action="/bank/deposit_confirm"  method="post" name="deposit_form">
+                <input class="input_basic" type="text" name="aNum" placeholder="Input Account Num">
+                <br>
+                <input class="input_basic" type="password" name="aPw" placeholder="Input Account PW">
+                <br>
+                <input class="input_basic" type="text" name="dAmount" placeholder="Input Deposit Amount ">
+                <br>
+                <input class="input_button_basic_130" type="button" value="DEPOSIT" onclick="depositForm();">
+                <input class="input_button_basic_130" type="reset" value="RESET">
+            </form>
+        </div>
+    </article>
+
+    {% include 'include/footer.html' %}
+
+</body>
+</html>

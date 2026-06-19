@@ -1,0 +1,144 @@
+#wrap {
+    width: 800px;
+    margin: 0 auto;
+}
+
+
+/* 제목 START*/
+#wrap > div.title_wrap {
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+    border-bottom: thick double #dadada;
+}
+
+/* 제목 END */
+
+/* 메뉴 START */
+#wrap > div.menu_wrap {
+    text-align: center;
+}
+/*  블럭타입은 잘되지만 인라인 타입 태그는 대부분 잘 안 됨 */
+/* 인라인 타입을 블럭화  */
+#wrap > div.menu_wrap a {
+    display: inline-block;      
+    width: 130px;
+    margin: 10px 5px;
+    padding: 10px;
+    border: 1px solid #dadada;
+    border-radius: 10px;
+}
+
+#wrap > div.menu_wrap a:hover {
+    background-color: #e0e0e0;
+    text-decoration: none;
+}
+
+#wrap > div.menu_wrap a.sign-out,
+#wrap > div.menu_wrap a.delete {
+    display: none;
+}
+
+
+/* 메뉴 END */
+
+/* 회원가입 START */
+
+#wrap >div.sign_up_wrap {
+    text-align: center;
+    display: none;
+} 
+
+/* 회원가입 END */
+
+/* 회원가입 START */
+
+#wrap >div.sign_in_wrap {
+    text-align: center;
+    display: none;
+}
+
+/* 일기 작성 START*/
+
+#wrap > div.write_wrap {
+    text-align: center;
+    display: none;
+}
+
+#wrap > div.write_wrap > input,
+#wrap > div.write_wrap > button {
+    padding: 20px;
+    margin: 10px;
+    border: 1px solid #dadada;
+    border-radius: 7px;
+    font-size: 1.2em;
+}
+
+#wrap > div.write_wrap > input {
+    width: 500px;
+}
+
+#wrap > div.write_wrap > button {
+    cursor: pointer;
+}
+
+/* 일기 작성 END*/
+
+/* 일기 리스트 START*/
+
+#wrap > div.list_wrap {
+    text-align: center;
+    display: none;
+}
+
+#wrap > div.list_wrap div {
+    border: 1px solid #dadada;
+    border-radius: 7px;
+    width: 600px;
+    padding: 10px;
+    margin: 2px auto;
+}
+
+/* 일기 리스트 END*/
+
+/* 계좌 개설  START*/
+
+#wrap > div.new_account_wrap {
+    text-align: center;
+    display: none;
+}
+
+/* 계좌 개설  END*/
+
+/* 입금 START */
+#wrap > div.deposit_wrap {
+    text-align: center;
+    display: none;
+}
+/* 입금 END */
+
+
+/* 출금 START */
+#wrap > div.withdrawal_wrap {
+    text-align: center;
+    display: none;
+}
+/* 출금 END */
+
+/* 계좌 목록 START */
+#wrap > div.acc_list_wrap {
+    text-align: center;
+    display: none;
+}
+/* 계좌 목록 END */
+
+
+
+/* 
+<a>, <span> 같은 인라인(inline) 태그들은 
+글자(Text)를 다루기 위해 태어난 녀석 
+block의 특징: 혼자서 한 줄을 다 차지해버립니다.
+*/
+
