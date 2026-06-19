@@ -1,0 +1,50 @@
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/include/nav.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/include/fadein.css') }}" rel="stylesheet">
+
+<script src="{{ url_for('static', filename='js/fadein.js') }}"></script>
+
+<nav class="intro_fadein">
+
+    {% if not session.get('signedId') %}
+    <div class="nav_wrap">
+        <a href="/">HOME</a>
+        <span class="divider">|</span>
+        <a href="/member/signup_form">SIGN-UP</a>
+        <span class="divider">|</span>
+        <a href="/member/signin_form">SIGN-IN</a>
+    </div>
+    {% else %}
+    <div class="nav_wrap">
+        <span class="signed_id">{{ session.get('signedId') }}</span>
+        <span class="divider">|</span>
+        <a href="/">HOME</a>
+        <span class="divider">|</span>
+        <a href="/member/signout_confirm">SIGN-OUT</a>
+        <span class="divider">|</span>
+        <a href="/member/modify_form">MODIFY</a>
+        <span class="divider">|</span>
+        <a href="/member/delete_confirm">DELETE</a>
+        <span class="divider">|</span>
+    </div>
+    {% if not request.path.startswith('/member') and not request.path.startswith('/apps') %}
+    <div class="nav_wrap_apps">
+        <a href="/app/bank">BANK</a>
+        <span class="divider">|</span>
+        <a href="/app/diary">DIARY</a>
+        <span class="divider">|</span>
+        <a href="/app/memo">MEMO</a>
+        <span class="divider">|</span>
+        <a href="/app/todolist">TODOLIST</a>
+    </div>
+    {% endif %}
+    {% endif %}
+    
+</nav>
+
+<script>
+    window.addEventListener('DOMContentLoaded', function () {
+        playIntroFadeinOnce();
+        playPageFadein();
+    });
+</script>

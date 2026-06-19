@@ -1,33 +1,21 @@
-function newaccountForm() {
-    console.log('newaccountForm():', newaccountForm())
+function newAccountForm() {
+    console.log('newAccountForm():', newAccountForm())
 
-    let form = document.newaccount_form;
+    let form = document.newAccount_form;
 
-    let aNum = form.aNum.value.trim();
     let aPw = form.aPw.value.trim();
   
-    console.log('aNum:', aNum)
     console.log('aPw:', aPw)
 
-    mId = session.get('')
-  
-    if (mId === '') {
-        alert('Please input member ID!!')
-        form.mId.focus();
-    } else if (mPw === '') {
-        alert('Please input member ID!!')
-        form.mPw.focus();
-    } else if (mMail === '') {
-        alert('Please input member ID!!')
-        form.mMail.focus();
-    } else if (mPhone === '') {
-        alert('Please input member ID!!')
-        form.mPhone.focus();
+    mId = session.get('signinedMemberId')
+    
+    if (aPw === '') {
+        alert('Please input Account PW!!')
+        form.aPw.focus();
     } else {
         form.submit();
     }
 }
-
 
 function signinForm() {
     console.log('signinForm')

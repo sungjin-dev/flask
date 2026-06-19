@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sign In</title>
+
+    <link href="{{ url_for('static', filename='css/member.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/include/fadein.css') }}" rel="stylesheet">
+
+    <script src="{{ url_for('static', filename='js/member.js') }}"></script>
+    
+</head>
+
+<body>
+    {% include 'include/background_video.html' %}
+    {% include 'include/header.html' %}
+    {% include 'include/nav.html' %}
+
+    <article class="member_wrap page_fadein">
+        <h3>SIGN-IN</h3>
+        {% if result == 'fail' %}
+        <p>Member ID or password is incorrect.</p>
+        {% endif %}
+        <form action="/member/signin_confirm" method="post" name="signin_form">
+            <input type="text" name="mId" placeholder="Input member ID">
+            <input type="password" name="mPw" placeholder="Input member PW">
+            <input type="button" value="SIGN IN" onclick="signinForm();">
+            <input type="reset" value="RESET">
+        </form>
+    </article>
+</body>
+
+</html>

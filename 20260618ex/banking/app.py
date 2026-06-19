@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request
-from blueprints.member.routes import bank_bp
+from blueprints.bank.routes import bank_bp
+
 
 app = Flask(__name__)
 
 app.secret_key = 'saujfhksdhfkjaskldjsakl'
+
+session['signinedMemberId'] = 'user123'
 
 app.register_blueprint(bank_bp)
 

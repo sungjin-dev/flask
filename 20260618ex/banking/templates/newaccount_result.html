@@ -13,14 +13,9 @@
     {% include 'include/header.html' %}
     {% include 'include/nav.html' %}
 
-    <article id="newaccount_wrap">
-        <div class="newaccount_result">
-            {% if result == 'OK' %}
-                <h3>CONGRATULATION NEW ACCOUNT REGISTERED!!</h3>
-            {% else %}
-                <h3>ACCOUNT REGISTERED FAIL!</h3>
-            {% endif %}    
-        </div>
+    <article id="newAccount_wrap">
+        <div class="newAccount_result">
+                <h3> NEW ACCOUNT REGISTERED!![{{aNum}}]</h3>   
     </article>
 
     {% include 'include/footer.html' %}

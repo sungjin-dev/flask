@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up Result</title>
+    <link href="{{ url_for('static', filename='css/member.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/include/fadein.css') }}" rel="stylesheet">
+
+</head>
+
+<body>
+    {% include 'include/background_video.html' %}
+    {% include 'include/header.html' %}
+    {% include 'include/nav.html' %}
+
+    <article class="member_wrap member_result page_fadein">
+        {% if result == 'OK' %}
+        <h3>SIGN-UP SUCCESS!!</h3>
+        {% else %}
+        <h3>SIGN-UP FAIL!!</h3>
+        {% endif %}
+    </article>
+</body>
+
+</html>
