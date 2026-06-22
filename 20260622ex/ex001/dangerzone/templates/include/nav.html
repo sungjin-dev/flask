@@ -1,0 +1,54 @@
+<link href="{{ url_for('static', filename='css/include/nav.css') }}" rel="stylesheet">
+
+<nav>
+    {% if not session.get('signinedMemberId') %}
+        <div class="nav_wrap">
+            <a href="/">HOME</a>
+            |
+            <a href="/member/signup_form">SIGN-UP</a>
+            |
+            <a href="/member/signin_form">SIGN-IN</a>
+        </div>
+    {% else %}
+        <div class="nav_wrap">
+            <a href="/">HOME</a>
+            |
+            <a href="/member/signout_confirm">SIGN-OUT</a>
+            |
+            <a href="/member/modify_form">MODIFY</a>
+            |                                      <!-- 일종의 알림창 역할 alert는 확인만 있고 confirm은 true false식으로 확인 취소 -->                     
+            <a href="/member/delete_confirm" onclick="return confirm('정말 탈퇴하시겠습니까?');">DELETE</a>
+            | 
+            <a href="/dashboard/">DASHBOARD</a>
+        </div>
+    {% endif %}
+    
+</nav>
+
+
+
+
+
+
+
+
+
+<!-- 바로 플라스크(Flask)가 HTML(Jinja2 템플릿)을 그릴 때 '기본 제공 꾸러미(Global Context)'를 몰래 같이 넘겨주기 때문입니다. -->
+
+<!-- return render_template('index.html')  이것만 코딩하더라도  실제로는 아래와 같이 정보가 전달된다. 
+
+
+return render_template('index.html', 
+                       session=session,  # 👈 세션 정보 자동 포함!
+                       request=request,  # 👈 현재 URL, 폼 데이터 등
+                       config=config,    # 👈 서버 설정 정보
+                       g=g)              # 👈 임시 저장소 -->  
+
+                       <!-- 💡 핵심 포인트: static도 사실은 라우트(함수)입니다!
+"어? 나는 파이썬에서 def static(): 같은 함수를 만든 적이 없는데요?" 라고 생각하실 수 있습니다.
+
+맞습니다. 우리가 직접 만들지는 않았지만, 플라스크는 태어날 때부터 CSS, JS, 이미지 같은 정적(Static) 파일들을 서빙하기 위해 static이라는 이름의 라우트(경로)를 내부적으로 몰래 만들어 둔 상태입니다.
+
+그래서 우리가 만든 함수를 역추적하듯, 플라스크가 만들어둔 static 라우트를 역추적해서 파일 주소를 얻어내는 것입니다. 
+
+하지만 플라스크(Flask)는 태어날 때부터 'static'이라는 이름의 폴더가 있을 것이라고 미리 기대하고, 그 폴더 전용 길(라우트)을 기본으로 뚫어놓은 상태입니다.-->

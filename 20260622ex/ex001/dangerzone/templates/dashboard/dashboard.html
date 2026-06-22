@@ -1,0 +1,126 @@
+HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% include 'include/title.html' %}
+
+    <link href="{{ url_for('static', filename='css/common.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/dashboard/dashboard.css') }}" rel="stylesheet">
+</head>
+<body>
+    
+    {% include 'include/header.html' %}
+    {% include 'include/nav.html' %}
+
+    <article id="dashboard_wrap">
+        
+        <h3>위험구역 침입 감지 대시보드</h3>
+
+        <div class="camera_view">
+            <img 
+                id="video_img"
+                src="/dashboard/video_feed"  
+                width="800">
+        </div>
+
+        <div class="log_wrap" style="margin-top: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px;">
+                <h4 style="margin: 0;"> 실시간 침입 로그</h4>
+                <div>
+                    <label for="log_date" style="font-weight: bold;"> 날짜 선택: </label>
+                    <input type="date" id="log_date" onchange="fetchLogs()" style="padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
+                </div>
+            </div>
+            
+            <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="width: 250px; border-bottom: 2px solid #ddd; padding: 10px;">발생 시간</th>
+                            <th style="border-bottom: 2px solid #ddd; padding: 10px;">경고 메시지</th>
+                            <th style="width: 150px; border-bottom: 2px solid #ddd; padding: 10px;">증거 사진</th> 
+                        </tr>
+                    </thead>
+                <tbody id="log_body">
+                </tbody>
+            </table>
+        </div>
+
+    </article>
+
+    {% include 'include/footer.html' %}
+
+    <script>
+        // 💡 [추가 1] 가장 최근 로그의 시간을 기억할 변수와, 사이렌 소리 객체를 미리 준비합니다.
+        let lastLogTime = null; 
+        const sirenSound = new Audio('/static/audio/siren.mp3'); 
+
+        function fetchLogs() {
+            const selectedDate = document.getElementById('log_date').value;
+            const url = selectedDate ? `/dashboard/get_logs?date=${selectedDate}` : '/dashboard/get_logs';
+
+            fetch(url)
+                .then(response => response.json()) 
+                .then(data => {
+                    const logBody = document.getElementById('log_body');
+                    logBody.innerHTML = ''; 
+
+                    if (data.length === 0) {
+                        logBody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 10px;">해당 날짜의 침입 기록이 없습니다.</td></tr>';
+                        return;
+                    }
+
+                    // 💡 [추가 2] 새 로그가 추가되었는지 확인하고 소리 울리기 로직
+                    // 파이썬에서 최신순(reverse)으로 보냈기 때문에 data[0]이 가장 최신 로그입니다.
+                    const newestLogTime = data[0].time;
+
+                    if (lastLogTime === null) {
+                        // 처음 화면을 켰을 때는 소리를 내지 않고 시간만 기억합니다.
+                        lastLogTime = newestLogTime;
+                    } else if (newestLogTime !== lastLogTime) {
+                        // 기억해둔 시간과 다르다 = "새로운 침입이 발생했다!"
+                        lastLogTime = newestLogTime; // 새로운 시간으로 업데이트
+                        
+                        // 메시지가 Danger일 때만 강력하게 사이렌을 울립니다.
+                        if (data[0].message.includes("Danger")) {
+                            sirenSound.play().catch(error => {
+                                console.log("브라우저 자동재생 정책에 의해 소리가 차단되었습니다. 화면을 한 번 클릭해주세요.", error);
+                            });
+                        }
+                    }
+
+                    // (이 아래는 기존과 완벽히 동일하게 표를 그리는 코드입니다)
+                    data.forEach(log => {
+                        let textColor = "black"; 
+
+                        if (log.message.includes("Danger")) {
+                            textColor = "red";
+                        } 
+                        else if (log.message.includes("Warning")) {
+                            textColor = "orange";
+                        }
+
+                        const row = `<tr>
+                            <td style="text-align: center; padding: 10px; border-bottom: 1px solid #eee;">${log.time}</td>
+                            <td style="color: ${textColor}; font-weight: bold; text-align: center; padding: 10px; border-bottom: 1px solid #eee;">${log.message}</td>
+                            <td style="text-align: center; padding: 10px; border-bottom: 1px solid #eee;">
+                                ${log.image ? `<button onclick="showImage('/${log.image}')" style="padding: 5px 10px; cursor: pointer;">사진 보기</button>` : '사진 없음'}
+                            </td>
+                        </tr>`;
+                        
+                        logBody.innerHTML += row;
+                    });
+                })
+                .catch(error => console.error('로그를 가져오는 중 에러 발생:', error));
+        }
+
+        fetchLogs();
+        setInterval(fetchLogs, 2000);
+
+        function showImage(imagePath) {
+            window.open(imagePath, '_blank', 'width=800,height=600');
+        }
+    </script>
+
+</body>
+</html>
