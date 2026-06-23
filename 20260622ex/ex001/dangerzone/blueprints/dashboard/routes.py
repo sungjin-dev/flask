@@ -31,7 +31,7 @@ def dashboard():
 def video_feed():
     return Response(
         generate_frames(),
-        mimetype = 'multipart/x-mixed-replace; boundary=frame'  # MJPEG (Motion JPEG) 스트리밍의 실제 HTTP 표준 규격입니다.
+        mimetype = 'multipart/x-mixed-replace; boundary=frame'  # MJPEG (Motion JPEG) 스트리밍의 실제 HTTP 표준 규격
     )
 
 def generate_frames():
@@ -41,7 +41,7 @@ def generate_frames():
         frame = get_frame()
 
         if frame is None:
-            time.sleep(0.1)  # 무한 루프 안에서 실패(예외) 상황을 처리할 때는 반드시 CPU가 숨 쉴 틈(time.sleep)을 주어야 한다
+            time.sleep(0.1)  # 무한 루프 안에서 실패(예외) 상황을 처리할 때는 반드시 CPU가 숨 쉴 틈(time.sleep)을 줌.
             continue
 
         ret, buffer = cv2.imencode('.jpg', frame)  # 이미지 압축
@@ -64,24 +64,18 @@ def generate_frames():
 @dashboard_bp.route('/get_logs')
 def get_logs():
     logs = load_intrusion_logs()
-    logs.reverse() # 최신순으로 뒤집기
+    logs.reverse() 
     
-    # 1. 브라우저(달력)에서 보낸 날짜를 확인합니다.
     selected_date = request.args.get('date')
     
-    # 2. 날짜를 선택했다면, 그 날짜(예: 2026-06-22)가 포함된 로그만 남깁니다.
     if selected_date:
         filtered_logs = [log for log in logs if selected_date in log['time']]
     else:
-        filtered_logs = logs # 선택 안 했으면 전체 보기
+        filtered_logs = logs
         
-    # 3. 데이터가 너무 많으면 짤리니까 15개까지만 보냅니다.
     recent_logs = filtered_logs[:15]
     
     return jsonify(recent_logs)
-
-
-
 
 # view 가 change되는 것이 아니라 이미지 데이터만 전송하면 된다 
 # 이미 뷰가 있기 떄문에 render_template로 뷰를 생성할 필요가 없이

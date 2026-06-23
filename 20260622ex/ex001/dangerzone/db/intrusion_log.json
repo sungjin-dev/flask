@@ -82,5 +82,76 @@
         "time": "2026-06-22 16:08:20",
         "message": "Danger Zone Intrusion",
         "image": "static/snapshots/20260622_160820.jpg"
+    },
+    {
+        "time": "2026-06-23 09:11:02",
+        "message": "Danger Zone Intrusion",
+        "image": "static/snapshots/20260623_091102.jpg"
+    },
+    {
+        "time": "2026-06-23 09:11:10",
+        "message": "Danger Zone Intrusion",
+        "image": "static/snapshots/20260623_091110.jpg"
+    },
+    {
+        "time": "2026-06-23 09:11:30",
+        "message": "Danger Zone Intrusion",
+        "image": "static/snapshots/20260623_091130.jpg"
+    },
+    {
+        "time": "2026-06-23 09:14:44",
+        "message": "Danger Zone Intrusion",
+        "image": "static/snapshots/20260623_091444.jpg"
+    },
+    {
+        "time": "2026-06-23 09:15:34",
+        "message": "Danger Zone Intrusion",
+        "image": "static/snapshots/20260623_091534.jpg"
+    },
+    {
+        "time": "2026-06-23 09:15:39",
+        "message": "Danger Zone Intrusion",
+        "image": "static/snapshots/20260623_091539.jpg"
+    },
+    {
+        "time": "2026-06-23 09:16:32",
+        "message": "Danger Zone Intrusion",
+        "image": "static/snapshots/20260623_091632.jpg"
+    },
+    {
+        "time": "2026-06-23 09:21:03",
+        "message": "Danger Zone Intrusion",
+        "image": "static/snapshots/20260623_092103.jpg"
+    },
+    {
+        "time": "2026-06-23 14:06:52",
+        "message": "Person Intrusion in Danger Zone"
+    },
+    {
+        "time": "2026-06-23 15:01:17",
+        "message": "Person Intrusion in Danger Zone",
+        "position": {
+            "x": 305,
+            "y": 239
+        },
+        "image": "static/snapshots/20260623_150117.jpg"
+    },
+    {
+        "time": "2026-06-23 15:47:42",
+        "message": "Person Intrusion in Danger Zone",
+        "position": {
+            "x": 322,
+            "y": 239
+        },
+        "image": "static/snapshots/20260623_154742.jpg"
+    },
+    {
+        "time": "2026-06-23 15:49:55",
+        "message": "Person Intrusion in Danger Zone",
+        "position": {
+            "x": 32,
+            "y": 172
+        },
+        "image": "static/snapshots/20260623_154955.jpg"
     }
 ]

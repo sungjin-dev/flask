@@ -1,31 +1,31 @@
 import cv2
 import threading
-from utils.json_manager import load_intrusion_logs, save_intrusion_logs, save_intrusion_log 
 from datetime import datetime, timedelta
-import os
+from ultralytics import YOLO
 
 from utils.json_manager import (
-    load_intrusion_logs,
-    save_intrusion_logs
+    save_intrusion_log,
+    save_snapshot
 )
-
-# camera_manager 파일은 카메라 영상을 받아와서 분석하고 위험을 판단하는 '뇌' 역할
 
 camera = None
 camera_lock = threading.Lock()
 
-ESP32_STREAM_URL = "http://192.168.137.246:81/stream"
+ESP32_STREAM_URL = "http://192.168.137.31:81/stream"
 
-prev_gray = None
+# YOLO 모델 로드
+model = YOLO("yolov8n.pt")
+
+YOLO_CONFIDENCE = 0.5
+
 last_intrusion_time = None
 
 
 # 고정 위험구역 좌표
-DANGER_X1 = 170  # 320 - 150
-DANGER_Y1 = 115  # 240 - 125
-DANGER_X2 = 470  # 320 + 150
-DANGER_Y2 = 365
-
+DANGER_X1 = 250
+DANGER_Y1 = 100
+DANGER_X2 = 550
+DANGER_Y2 = 350
 
 def init_camera():
 
@@ -33,9 +33,12 @@ def init_camera():
 
     if camera is None:
         print("camera connecting...")
-        camera = cv2.VideoCapture(ESP32_STREAM_URL)
-        print("camera connected")
 
+        camera = cv2.VideoCapture(ESP32_STREAM_URL)
+        camera.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+
+        print("opened:", camera.isOpened())
+        print("camera connected")
 
 def reconnect_camera():
 
@@ -43,122 +46,138 @@ def reconnect_camera():
 
     print("camera reconnecting...")
 
-    try:                       # 단순히 작동 안 된다고 return해서 서버를 닫는게 아니라 자동복구 시스템 
+    try:
         if camera is not None:
             camera.release()
     except:
         pass
 
-    # 💡 핵심 방어막: 무한 재시도로 인한 과부하를 막기 위해 3초간 숨을 고릅니다.
-    import time
-    time.sleep(3)
-
     camera = cv2.VideoCapture(ESP32_STREAM_URL)
+    camera.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
     print("camera reconnected")
-
 
 def get_frame():
 
     global camera
-    global prev_gray
     global last_intrusion_time
 
     if camera is None:
+        init_camera()
         return None
 
     try:
-
         if not camera.isOpened():
             reconnect_camera()
             return None
 
-        with camera_lock:  # 이건 알고 넘어가기 
+        with camera_lock:
             success, frame = camera.read()
-# threading.Lock()을 사용해 "한 놈이 사진 뽑아갈 동안 다른 놈들은 잠깐 대기해!"라고 줄을 세운 것은 멀티스레드 서버 환경에서 필수적인 고급 기술입니다.
+
         if not success:
             reconnect_camera()
             return None
 
-        gray = cv2.cvtColor(
-            frame,
-            cv2.COLOR_BGR2GRAY
-        )
-
-        gray = cv2.GaussianBlur(
-            gray,
-            (21, 21),
-            0
-        )
-
         is_intrusion = False
 
-        if prev_gray is None:
+        # YOLO 객체 감지
+        results = model(
+            frame,
+            verbose=False
+        )
 
-            prev_gray = gray
+        result = results[0]
 
-        else:
+        for box in result.boxes:
 
-            diff = cv2.absdiff(   #0.1초 전 화면과 지금 화면을 비교해서 '달라진 부분(움직임)'만 찾아냄
-                prev_gray,
-                gray
+            class_id = int(box.cls[0])
+            confidence = float(box.conf[0])
+
+            # COCO 기준 person 클래스 번호는 0
+            if class_id != 0:
+                continue
+
+            # 신뢰도 낮은 결과 제거
+            if confidence < YOLO_CONFIDENCE:
+                continue
+
+            x1, y1, x2, y2 = box.xyxy[0]
+
+            x1 = int(x1)
+            y1 = int(y1)
+            x2 = int(x2)
+            y2 = int(y2)
+
+            center_x = (x1 + x2) // 2
+            center_y = (y1 + y2) // 2
+
+            pixel_height = y2 - y1 
+
+            print(f"📏 5m 거리 픽셀 높이 확인용: {pixel_height} px")
+            
+            # 2. 구출자 예상 거리 계산 (F값이 441이라고 가정)
+            FOCAL_LENGTH = 441 
+            REAL_HEIGHT_M = 1.7 
+            
+            # 0으로 나누는 에러 방지
+            if pixel_height > 0: 
+                estimated_distance = (REAL_HEIGHT_M * FOCAL_LENGTH) / pixel_height
+            else:
+                estimated_distance = 0.0
+                
+            # 화면에 거리 정보 띄워주기 (소수점 1자리까지)
+            cv2.putText(
+                frame,
+                f"Dist: {estimated_distance:.1f}m",
+                (x1, y2 + 20), # 박스 아래쪽에 노란색으로 표시
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.7,
+                (0, 255, 255), # (B, G, R) 기준 노란색
+                2
             )
 
-            _, thresh = cv2.threshold(
-                diff,
-                25,
-                255,
-                cv2.THRESH_BINARY
+            # 사람 박스 표시
+            cv2.rectangle(
+                frame,
+                (x1, y1),
+                (x2, y2),
+                (0, 255, 0),
+                2
             )
 
-            contours, _ = cv2.findContours(   # 그 달라진 부분의 윤곽선을 따서 덩어리를 만듭니다.
-                thresh,
-                cv2.RETR_EXTERNAL,
-                cv2.CHAIN_APPROX_SIMPLE
+            cv2.putText(
+                frame,
+                f"person {confidence:.2f}",
+                (x1, y1 - 10),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.7,
+                (0, 255, 0),
+                2
             )
 
-            for contour in contours:
+            # 중심점 표시
+            cv2.circle(
+                frame,
+                (center_x, center_y),
+                5,
+                (255, 0, 0),
+                -1
+            )
 
-                if cv2.contourArea(contour) < 500:  
-                    continue
+            # 사람 중심점이 위험구역 안에 있는지 확인
+            if (
+                DANGER_X1 <= center_x <= DANGER_X2
+                and
+                DANGER_Y1 <= center_y <= DANGER_Y2
+            ):
+                is_intrusion = True
 
-                x, y, w, h = cv2.boundingRect(
-                    contour
-                )
-
-                center_x = x + w // 2
-                center_y = y + h // 2
-
-                cv2.rectangle(      # 덩어리의 넓이가 500 이상이면 사람이나 큰 물체로 판단하고 초록색 네모(cv2.rectangle)를 씌웁니다.
-                    frame,
-                    (x, y),
-                    (x + w, y + h),
-                    (0, 255, 0),
-                    2
-                )
-
-                cv2.circle(
-                    frame,
-                    (center_x, center_y),
-                    5,
-                    (255, 0, 0),
-                    -1
-                )
-
-                if (
-                    DANGER_X1 <= center_x <= DANGER_X2
-                    and
-                    DANGER_Y1 <= center_y <= DANGER_Y2
-                ):
-                    is_intrusion = True
-
-            prev_gray = gray
-
-        danger_color = (0, 0, 255)   
+        danger_color = (0, 0, 255)
 
         if is_intrusion:
-            danger_color = (0, 255, 255)   # 노란색
+            danger_color = (0, 255, 255)
 
+        # 위험구역 표시
         cv2.rectangle(
             frame,
             (DANGER_X1, DANGER_Y1),
@@ -177,11 +196,12 @@ def get_frame():
             2
         )
 
+        # 사람 침입 발생
         if is_intrusion:
 
             cv2.putText(
                 frame,
-                "INTRUSION DETECTED",
+                "PERSON INTRUSION",
                 (30, 50),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 1,
@@ -191,14 +211,17 @@ def get_frame():
 
             now = datetime.now()
 
+            # 5초마다 한 번만 로그 저장
             if (
                 last_intrusion_time is None
                 or
                 now - last_intrusion_time >
-                timedelta(seconds=5)    # 한 번 침입을 감지하고 나면 5초 동안은 다시 기록하지 않도록 쿨타임 중요! 과부하 방지
+                timedelta(seconds=5)
+                
             ):
+                img_path = save_snapshot(frame)
 
-                save_intrusion_log(frame)
+                save_intrusion_log(center_x, center_y, img_path)
 
                 last_intrusion_time = now
 

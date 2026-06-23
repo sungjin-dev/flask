@@ -3,7 +3,6 @@ from blueprints.member.routes import member_bp
 from blueprints.dashboard.routes import dashboard_bp
 from ai.camera_manager import init_camera
 
-
 app = Flask(__name__)
 app.secret_key = "dw-aiot5th-20260622"
 
